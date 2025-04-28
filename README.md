@@ -2,7 +2,6 @@
 
 Files for the NAACL 2025 paper, [**VisDoM**: Multi-Document QA with Visually Rich Elements Using **Multimodal Retrieval-Augmented Generation**](https://arxiv.org/abs/2412.10704). 📚📊🔍  
 
-
 ## 📂 What's Inside?  
 This repo contains the **5 data splits** in **VisDoMBench**, a cutting-edge **multi-document, multimodal QA benchmark** 🚀🔎 designed for answering questions across **visually rich** document content like:  
 
@@ -12,6 +11,37 @@ Perfect for **evaluating** multimodal, multi-document QA systems in a **comprehe
 
 ![VisDoM Benchmark](https://github.com/user-attachments/assets/0d4f2220-90b4-41d0-b7f4-abd10471244b)  
 
+## 🤖 VisDoMRAG
+
+This repository includes `visdomrag.py`, our implementation of the VisDoMRAG framework, a multimodal retrieval-augmented pipeline specifically designed for visual document understanding and question answering. 
+
+### Key Components
+
+1. **Visual Retrieval:** Using models like ColPali and ColQwen for image-to-image and text-to-image retrieval
+2. **Text Retrieval:** Supporting BM25, MiniLM, MPNet, and BGE embeddings
+3. **Multi-Stage Pipeline:**
+   - Document caching and preprocessing
+   - Visual and textual index building
+   - Context retrieval based on queries
+   - Response generation from each modality
+   - Response combination for final answers
+
+### Configuration Options
+
+```python
+config = {
+    "data_dir": "path/to/data",
+    "output_dir": "path/to/output",
+    "llm_model": "gpt4",  # Options: "gpt4", "gemini", "qwen"
+    "vision_retriever": "colpali",  # Options: "colpali", "colqwen"
+    "text_retriever": "bm25",  # Options: "bm25", "minilm", "mpnet", "bge"
+    "top_k": 5,  # Number of contexts to retrieve
+    "chunk_size": 3000,  # Text chunk size for retrieval
+    "chunk_overlap": 300,  # Overlap between chunks
+    "force_reindex": False,  # Whether to rebuild indexes
+    "qa_prompt": # Refer to context dataset specific prompts in the code
+}
+```
 
 ## 📊 Dataset Summary  
 
@@ -26,9 +56,44 @@ Perfect for **evaluating** multimodal, multi-document QA systems in a **comprehe
 
 📌 *Table: Summary of data splits included in VisDoMBench.*  
 
----  
 
+## 🚀 Usage
 
+```python
+from visdomrag import VisDoMRAG
+
+# Configure the pipeline
+config = {
+    "data_dir": "./path/to/dataset",
+    "output_dir": "./results",
+    "llm_model": "gpt4",
+    "vision_retriever": "colpali",
+    "text_retriever": "bm25",
+    "api_keys": {
+        "openai": "your-openai-key",
+        "gemini": "your-gemini-key"
+    }
+}
+
+# Initialize and run
+pipeline = VisDoMRAG(config)
+pipeline.run()  # Process all queries
+# Or process a specific query
+pipeline.process_query(query_id)
+```
+
+## 📚 Dependencies
+
+Main requirements:
+- PyTorch
+- pandas, numpy
+- pdf2image, PyPDF2, pytesseract (for PDF processing)
+- chromadb, langchain (for text retrieval)
+- Optional model-specific dependencies:
+  - `google.generativeai` for Gemini
+  - `openai` for GPT-4
+  - `colpali_engine` for ColPali/ColQwen visual retrievers
+  - `transformers` for Qwen models
 
 ## 📖 Cite us:  
 ```bibtex
@@ -42,4 +107,3 @@ Perfect for **evaluating** multimodal, multi-document QA systems in a **comprehe
       url={https://arxiv.org/abs/2412.10704}, 
 }
 ```
-
