@@ -72,8 +72,6 @@ class VisDoMRAG:
         self.chunk_overlap = config.get("chunk_overlap", 300)
         self.force_reindex = config.get("force_reindex", False)
         self.qa_prompt = config.get("qa_prompt", "Answee the question objectively based on the context provided.")
-        
-        # NEW: Accept CSV path directly from config
         self.dataset_csv = config.get("csv_path")
         if not self.dataset_csv:
             # Fallback to old behavior if csv_path not provided
